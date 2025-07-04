@@ -2,7 +2,6 @@ import asyncio
 from datetime import timedelta
 import uuid
 from temporalio.client import Client
-# No need to import WorkflowHandle explicitly if we're not using its methods
 from temporalio.exceptions import ApplicationError
 from shared import Order, TASK_QUEUE
 from workflows import OrderProcessingWorkflow
@@ -24,9 +23,7 @@ async def main():
     try:
         print(f"\n✨ Starting OrderProcessingWorkflow for Order ID: {order.order_id}...")
         
-        # In your environment, await client.execute_workflow seems to directly return
-        # the final string result of the workflow, rather than a WorkflowHandle.
-        # We will capture this directly as 'final_status'.
+
         final_status: str = await client.execute_workflow(
             OrderProcessingWorkflow.run,
             order,
@@ -35,8 +32,6 @@ async def main():
             execution_timeout=timedelta(minutes=10)
         )
         
-        # Since 'final_status' already contains the result, just print it directly.
-        # No need to call .id, .run_id, or .result() as they don't exist on a str.
         print(f"\n🎉 Workflow finished for Order ID: {order.order_id} with status: {final_status}")
 
     except ApplicationError as ae:
